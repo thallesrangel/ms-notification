@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Type {
+  id    Int    @id @default(autoincrement())
+  name String
+  type Notification[] @relation("Types")
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  message String @db.VarChar(255)
+  from Int
+  to Int
+  typeId Int
+  type Type @relation("Types", fields: [typeId], references: [id])
+  ready Boolean?  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
